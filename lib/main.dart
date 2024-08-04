@@ -6,11 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'resposinve.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -21,13 +21,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -176,7 +176,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   child: true
                                       ? Text(
                                           answerNumber[index].toString(),
-                                          style: const TextStyle(fontSize: 20),
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                          ),
                                         )
                                       : const SizedBox()),
                             ),
@@ -196,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Center(
-                      child: Container(
+                      child: SizedBox(
                         height: 60,
                         width: size.width,
                         child: Column(
@@ -210,7 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4.0),
-                                    child: Container(
+                                    child: SizedBox(
                                       height: 60,
                                       width: 50,
                                       // color: Colors.amber,
@@ -228,8 +230,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                           child: Center(
                                               child: Text(
                                             pickNumber[index].toString(),
-                                            style:
-                                                const TextStyle(fontSize: 20),
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black,
+                                                decoration:
+                                                    TextDecoration.none),
                                           )),
                                         ),
                                         childWhenDragging: const SizedBox(),
