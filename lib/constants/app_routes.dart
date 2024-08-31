@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../features/home/screens/game_menu.dart';
-import '../features/number_game/number_game.dart';
-import '../splash_page.dart';
+import '../features/number_game/screens/number_game.dart';
+import '../splash/splash_page.dart';
 
 class AppRoutes {
   static final AppRoutes _appRoutes = AppRoutes();

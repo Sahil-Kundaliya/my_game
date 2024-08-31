@@ -1,36 +1,16 @@
-import 'package:dazll_demo/constants/app_routes.dart';
+import 'package:dazll_demo/features/number_game/cubits/number_game_cubit.dart';
+import 'package:dazll_demo/features/number_game/cubits/number_game_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../resposinve.dart';
+import '../../../resposinve.dart';
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
   static const String myHomePage = '/MyHomePage';
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  List<int> randomNumber = [1, 2, 3, 4, 5, 6];
-  List<int> answerNumber = [-1, -1, -1, -1, -1, -1];
-  List<int> pickNumber = [1, 2, 3, 4, 5, 6];
-  bool trueAnswer = false;
-
-  @override
-  void initState() {
-    super.initState();
-    randomNumber.shuffle();
-    // pickNumber.shuffle();
-  }
-
-  void restart() {
-    answerNumber = [-1, -1, -1, -1, -1, -1];
-    pickNumber = [1, 2, 3, 4, 5, 6];
-  }
-
-  Widget getScreen() {
-    final size = MediaQuery.of(context).size;
+  Widget getScreen({required BuildContext context, NumberGameState? state}) {
+    final size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Demo'),
@@ -49,28 +29,27 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(
               width: size.width,
               height: 65,
-              child: DragTarget(
-                builder: (context, candidateData, rejectedData) {
-                  return ListView.builder(
-                    itemCount: randomNumber.length,
-                    scrollDirection: Axis.horizontal,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Container(
-                          height: 60,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Center(
-                              child: !trueAnswer
-                                  ? Text(randomNumber[index].toString())
-                                  : const SizedBox()),
-                        ),
-                      );
-                    },
+              child: ListView.builder(
+                itemCount: context.read<NumberGameCubit>().randomNumber.length,
+                scrollDirection: Axis.horizontal,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Container(
+                      height: 60,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Center(
+                          child: !context.read<NumberGameCubit>().trueAnswer
+                              ? Text(context
+                                  .read<NumberGameCubit>()
+                                  .randomNumber[index]
+                                  .toString())
+                              : const SizedBox()),
+                    ),
                   );
                 },
               ),
@@ -85,7 +64,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   scrollDirection: Axis.horizontal,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    bool answered = answerNumber[index] == -1 ? true : false;
+                    bool answered =
+                        context.read<NumberGameCubit>().answerNumber[index] ==
+                                -1
+                            ? true
+                            : false;
                     return answered
                         ? DragTarget(
                             builder: (context, candidateData, rejectedData) {
@@ -100,14 +83,22 @@ class _MyHomePageState extends State<MyHomePage> {
                                       border: Border.all(color: Colors.black),
                                       borderRadius: BorderRadius.circular(8)),
                                   child: Center(
-                                      child: trueAnswer
-                                          ? Text(randomNumber[index].toString())
+                                      child: context
+                                              .read<NumberGameCubit>()
+                                              .trueAnswer
+                                          ? Text(context
+                                              .read<NumberGameCubit>()
+                                              .randomNumber[index]
+                                              .toString())
                                           : const SizedBox()),
                                 ),
                               );
                             },
                             onAcceptWithDetails: (details) {
-                              pickNumber.removeWhere(
+                              context
+                                  .read<NumberGameCubit>()
+                                  .pickNumber
+                                  .removeWhere(
                                 (element) {
                                   return element ==
                                           int.parse(details.data.toString())
@@ -115,17 +106,37 @@ class _MyHomePageState extends State<MyHomePage> {
                                       : false;
                                 },
                               );
-                              answerNumber[index] =
+                              context
+                                      .read<NumberGameCubit>()
+                                      .answerNumber[index] =
                                   int.parse(details.data.toString());
 
-                              if (!answerNumber.contains(-1)) {
+                              if (!context
+                                  .read<NumberGameCubit>()
+                                  .answerNumber
+                                  .contains(-1)) {
                                 int totalRightAnswer = 0;
-                                for (var i = 0; i < randomNumber.length; i++) {
-                                  if (randomNumber[i] == answerNumber[i]) {
+                                for (var i = 0;
+                                    i <
+                                        context
+                                            .read<NumberGameCubit>()
+                                            .randomNumber
+                                            .length;
+                                    i++) {
+                                  if (context
+                                          .read<NumberGameCubit>()
+                                          .randomNumber[i] ==
+                                      context
+                                          .read<NumberGameCubit>()
+                                          .answerNumber[i]) {
                                     totalRightAnswer += 1;
                                   }
                                 }
-                                if (totalRightAnswer == answerNumber.length) {
+                                if (totalRightAnswer ==
+                                    context
+                                        .read<NumberGameCubit>()
+                                        .answerNumber
+                                        .length) {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
                                     content: Text('You WIN'),
@@ -136,11 +147,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                     content: Text(
                                         'You Loss, ${totalRightAnswer == -1 ? 0 : totalRightAnswer} coreet answer'),
                                   ));
-                                  restart();
+                                  context.read<NumberGameCubit>().restart();
                                 }
                               }
-
-                              setState(() {});
+                              context.read<NumberGameCubit>().cardPickked();
                             },
                           )
                         : Padding(
@@ -155,7 +165,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Center(
                                   child: true
                                       ? Text(
-                                          answerNumber[index].toString(),
+                                          context
+                                              .read<NumberGameCubit>()
+                                              .answerNumber[index]
+                                              .toString(),
                                           style: const TextStyle(
                                             fontSize: 20,
                                           ),
@@ -185,7 +198,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           children: [
                             Expanded(
                               child: ListView.builder(
-                                itemCount: pickNumber.length,
+                                itemCount: context
+                                    .read<NumberGameCubit>()
+                                    .pickNumber
+                                    .length,
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
@@ -197,7 +213,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       width: 50,
                                       // color: Colors.amber,
                                       child: Draggable(
-                                        data: pickNumber[index],
+                                        data: context
+                                            .read<NumberGameCubit>()
+                                            .pickNumber[index],
                                         feedback: Container(
                                           height: 60,
                                           width: 50,
@@ -209,7 +227,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   BorderRadius.circular(8)),
                                           child: Center(
                                               child: Text(
-                                            pickNumber[index].toString(),
+                                            context
+                                                .read<NumberGameCubit>()
+                                                .pickNumber[index]
+                                                .toString(),
                                             style: const TextStyle(
                                                 fontSize: 20,
                                                 color: Colors.black,
@@ -229,7 +250,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   BorderRadius.circular(8)),
                                           child: Center(
                                               child: Text(
-                                            pickNumber[index].toString(),
+                                            context
+                                                .read<NumberGameCubit>()
+                                                .pickNumber[index]
+                                                .toString(),
                                             style:
                                                 const TextStyle(fontSize: 20),
                                           )),
@@ -255,12 +279,19 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // final size = MediaQuery.of(context).size;
-    return ResponsiveLayout(
-      mobileBody: getScreen(),
-      tabletBody: const Center(
-        child: Text('Table'),
+    return BlocProvider(
+      create: (context) => NumberGameCubit(),
+      child: BlocBuilder<NumberGameCubit, NumberGameState>(
+        builder: (context, state) {
+          return ResponsiveLayout(
+            mobileBody: getScreen(context: context),
+            tabletBody: const Center(
+              child: Text('Table'),
+            ),
+            webBody: getScreen(context: context, state: state),
+          );
+        },
       ),
-      webBody: getScreen(),
     );
   }
 }
