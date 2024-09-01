@@ -1,7 +1,9 @@
+import 'dart:developer';
+
+import 'package:dazll_demo/constants/app_colors.dart';
 import 'package:dazll_demo/features/number_game/cubits/number_game_cubit.dart';
 import 'package:dazll_demo/features/number_game/cubits/number_game_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../resposinve.dart';
@@ -9,8 +11,37 @@ import '../../../resposinve.dart';
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
   static const String myHomePage = '/MyHomePage';
+
+  selectedAnswer(
+      {required BuildContext context,
+      required DragTargetDetails<Object?> details,
+      required int index}) {
+    NumberGameCubit numberGameCubit = context.read<NumberGameCubit>();
+    if (numberGameCubit.answerNumber[index] == -1) {
+      numberGameCubit.pickNumber.removeWhere(
+        (element) {
+          return element == int.parse(details.data.toString()) ? true : false;
+        },
+      );
+
+      for (var i = 0; i < numberGameCubit.answerNumber.length; i++) {
+        if (i == numberGameCubit.selectedItem) {
+          numberGameCubit.answerNumber[i] = -1;
+        }
+      }
+      numberGameCubit.answerNumber[index] = int.parse(details.data.toString());
+    } else {
+      numberGameCubit.answerNumber[numberGameCubit.selectedItem] =
+          numberGameCubit.answerNumber[index];
+      numberGameCubit.answerNumber[index] = int.parse(details.data.toString());
+    }
+    numberGameCubit.updateState();
+  }
+
   Widget getScreen({required BuildContext context, NumberGameState? state}) {
     final size = MediaQuery.sizeOf(context);
+    NumberGameCubit numberGameCubit = context.read<NumberGameCubit>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Demo'),
@@ -30,7 +61,7 @@ class MyHomePage extends StatelessWidget {
               width: size.width,
               height: 65,
               child: ListView.builder(
-                itemCount: context.read<NumberGameCubit>().randomNumber.length,
+                itemCount: numberGameCubit.randomNumber.length,
                 scrollDirection: Axis.horizontal,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
@@ -43,10 +74,8 @@ class MyHomePage extends StatelessWidget {
                           color: Colors.grey.shade300,
                           borderRadius: BorderRadius.circular(8)),
                       child: Center(
-                          child: !context.read<NumberGameCubit>().trueAnswer
-                              ? Text(context
-                                  .read<NumberGameCubit>()
-                                  .randomNumber[index]
+                          child: !numberGameCubit.trueAnswer
+                              ? Text(numberGameCubit.randomNumber[index]
                                   .toString())
                               : const SizedBox()),
                     ),
@@ -60,15 +89,22 @@ class MyHomePage extends StatelessWidget {
                 width: size.width,
                 height: 65,
                 child: ListView.builder(
-                  itemCount: 6,
+                  itemCount: numberGameCubit.randomNumber.length,
                   scrollDirection: Axis.horizontal,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    bool answered =
-                        context.read<NumberGameCubit>().answerNumber[index] ==
-                                -1
-                            ? true
-                            : false;
+                    bool answered = true;
+                    if (numberGameCubit.answerNumber[index] == -1) {
+                      answered = true;
+                    } else if (numberGameCubit.selectedItem != -1) {
+                      if (index == numberGameCubit.selectedItem) {
+                        answered = false;
+                      } else {
+                        answered = true;
+                      }
+                    } else {
+                      answered = false;
+                    }
                     return answered
                         ? DragTarget(
                             builder: (context, candidateData, rejectedData) {
@@ -83,74 +119,23 @@ class MyHomePage extends StatelessWidget {
                                       border: Border.all(color: Colors.black),
                                       borderRadius: BorderRadius.circular(8)),
                                   child: Center(
-                                      child: context
-                                              .read<NumberGameCubit>()
-                                              .trueAnswer
-                                          ? Text(context
-                                              .read<NumberGameCubit>()
-                                              .randomNumber[index]
-                                              .toString())
-                                          : const SizedBox()),
+                                      child:
+                                          numberGameCubit.answerNumber[index] !=
+                                                  -1
+                                              ? Text(numberGameCubit
+                                                  .answerNumber[index]
+                                                  .toString())
+                                              : const SizedBox(
+                                                  child: Text('-1'),
+                                                )),
                                 ),
                               );
                             },
                             onAcceptWithDetails: (details) {
-                              context
-                                  .read<NumberGameCubit>()
-                                  .pickNumber
-                                  .removeWhere(
-                                (element) {
-                                  return element ==
-                                          int.parse(details.data.toString())
-                                      ? true
-                                      : false;
-                                },
-                              );
-                              context
-                                      .read<NumberGameCubit>()
-                                      .answerNumber[index] =
-                                  int.parse(details.data.toString());
-
-                              if (!context
-                                  .read<NumberGameCubit>()
-                                  .answerNumber
-                                  .contains(-1)) {
-                                int totalRightAnswer = 0;
-                                for (var i = 0;
-                                    i <
-                                        context
-                                            .read<NumberGameCubit>()
-                                            .randomNumber
-                                            .length;
-                                    i++) {
-                                  if (context
-                                          .read<NumberGameCubit>()
-                                          .randomNumber[i] ==
-                                      context
-                                          .read<NumberGameCubit>()
-                                          .answerNumber[i]) {
-                                    totalRightAnswer += 1;
-                                  }
-                                }
-                                if (totalRightAnswer ==
-                                    context
-                                        .read<NumberGameCubit>()
-                                        .answerNumber
-                                        .length) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text('You WIN'),
-                                  ));
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                        'You Loss, ${totalRightAnswer == -1 ? 0 : totalRightAnswer} coreet answer'),
-                                  ));
-                                  context.read<NumberGameCubit>().restart();
-                                }
-                              }
-                              context.read<NumberGameCubit>().cardPickked();
+                              selectedAnswer(
+                                  details: details,
+                                  context: context,
+                                  index: index);
                             },
                           )
                         : Padding(
@@ -163,17 +148,49 @@ class MyHomePage extends StatelessWidget {
                                   color: Colors.grey.shade300,
                                   borderRadius: BorderRadius.circular(8)),
                               child: Center(
-                                  child: true
-                                      ? Text(
-                                          context
-                                              .read<NumberGameCubit>()
-                                              .answerNumber[index]
-                                              .toString(),
-                                          style: const TextStyle(
-                                            fontSize: 20,
-                                          ),
-                                        )
-                                      : const SizedBox()),
+                                  child: Draggable(
+                                data: numberGameCubit.answerNumber[index],
+                                onDragStarted: () {
+                                  numberGameCubit.changeSelctedItemIndex(
+                                      index: index);
+                                },
+                                onDragEnd: (details) {
+                                  numberGameCubit.changeSelctedItemIndex(
+                                      index: -1);
+                                },
+                                feedback: Container(
+                                  height: 60,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade300,
+                                      border: Border.all(color: Colors.black),
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Center(
+                                      child: Text(
+                                    numberGameCubit.answerNumber[index]
+                                        .toString(),
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        decoration: TextDecoration.none),
+                                  )),
+                                ),
+                                childWhenDragging: const SizedBox(),
+                                child: Container(
+                                  height: 60,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade300,
+                                      border: Border.all(color: Colors.black),
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Center(
+                                      child: Text(
+                                    numberGameCubit.answerNumber[index]
+                                        .toString(),
+                                    style: const TextStyle(fontSize: 20),
+                                  )),
+                                ),
+                              )),
                             ),
                           );
                   },
@@ -181,7 +198,47 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 10, right: 10),
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: GestureDetector(
+                onTap: () {
+                  if (!numberGameCubit.answerNumber.contains(-1)) {
+                    int totalRightAnswer = 0;
+                    for (var i = 0;
+                        i < numberGameCubit.randomNumber.length;
+                        i++) {
+                      if (numberGameCubit.randomNumber[i] ==
+                          numberGameCubit.answerNumber[i]) {
+                        totalRightAnswer += 1;
+                      }
+                    }
+                    if (totalRightAnswer ==
+                        numberGameCubit.answerNumber.length) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('You Win'),
+                      ));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            'You Loss, ${totalRightAnswer == -1 ? 0 : totalRightAnswer} Correct Answer'),
+                      ));
+                      // numberGameCubit.restart();
+                    }
+                  }
+                },
+                child: Container(
+                  height: 60,
+                  width: size.width,
+                  decoration: const BoxDecoration(color: AppColors.amberColor),
+                  child: const Center(
+                      child: Text(
+                    'Check Now',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  )),
+                ),
+              ),
+            ),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(10, 15.0, 10, 0),
                 child: Container(
                   height: 165,
                   width: size.width,
@@ -198,10 +255,7 @@ class MyHomePage extends StatelessWidget {
                           children: [
                             Expanded(
                               child: ListView.builder(
-                                itemCount: context
-                                    .read<NumberGameCubit>()
-                                    .pickNumber
-                                    .length,
+                                itemCount: numberGameCubit.pickNumber.length,
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
@@ -213,9 +267,7 @@ class MyHomePage extends StatelessWidget {
                                       width: 50,
                                       // color: Colors.amber,
                                       child: Draggable(
-                                        data: context
-                                            .read<NumberGameCubit>()
-                                            .pickNumber[index],
+                                        data: numberGameCubit.pickNumber[index],
                                         feedback: Container(
                                           height: 60,
                                           width: 50,
@@ -227,9 +279,7 @@ class MyHomePage extends StatelessWidget {
                                                   BorderRadius.circular(8)),
                                           child: Center(
                                               child: Text(
-                                            context
-                                                .read<NumberGameCubit>()
-                                                .pickNumber[index]
+                                            numberGameCubit.pickNumber[index]
                                                 .toString(),
                                             style: const TextStyle(
                                                 fontSize: 20,
@@ -250,9 +300,7 @@ class MyHomePage extends StatelessWidget {
                                                   BorderRadius.circular(8)),
                                           child: Center(
                                               child: Text(
-                                            context
-                                                .read<NumberGameCubit>()
-                                                .pickNumber[index]
+                                            numberGameCubit.pickNumber[index]
                                                 .toString(),
                                             style:
                                                 const TextStyle(fontSize: 20),

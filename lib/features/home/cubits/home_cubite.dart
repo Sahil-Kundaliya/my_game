@@ -15,7 +15,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   loadingGames() async {
     emit(HomeLoadingState());
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 0));
     emit(HomeShowGamesState());
   }
 
