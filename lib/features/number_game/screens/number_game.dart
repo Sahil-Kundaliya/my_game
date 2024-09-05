@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dazll_demo/constants/app_colors.dart';
 import 'package:dazll_demo/features/number_game/cubits/number_game_cubit.dart';
 import 'package:dazll_demo/features/number_game/cubits/number_game_state.dart';
@@ -11,32 +9,6 @@ import '../../../resposinve.dart';
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
   static const String myHomePage = '/MyHomePage';
-
-  selectedAnswer(
-      {required BuildContext context,
-      required DragTargetDetails<Object?> details,
-      required int index}) {
-    NumberGameCubit numberGameCubit = context.read<NumberGameCubit>();
-    if (numberGameCubit.answerNumber[index] == -1) {
-      numberGameCubit.pickNumber.removeWhere(
-        (element) {
-          return element == int.parse(details.data.toString()) ? true : false;
-        },
-      );
-
-      for (var i = 0; i < numberGameCubit.answerNumber.length; i++) {
-        if (i == numberGameCubit.selectedItem) {
-          numberGameCubit.answerNumber[i] = -1;
-        }
-      }
-      numberGameCubit.answerNumber[index] = int.parse(details.data.toString());
-    } else {
-      numberGameCubit.answerNumber[numberGameCubit.selectedItem] =
-          numberGameCubit.answerNumber[index];
-      numberGameCubit.answerNumber[index] = int.parse(details.data.toString());
-    }
-    numberGameCubit.updateState();
-  }
 
   Widget getScreen({required BuildContext context, NumberGameState? state}) {
     final size = MediaQuery.sizeOf(context);
@@ -56,6 +28,35 @@ class MyHomePage extends StatelessWidget {
             Container(
               height: size.height * 0.15,
               decoration: const BoxDecoration(),
+              child: const Center(
+                  child: Text(
+                'Level: 1',
+                style: TextStyle(
+                    fontSize: 30,
+                    color: AppColors.blackColor,
+                    fontWeight: FontWeight.bold),
+              )),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Text(
+                    'Your failed ',
+                    style: TextStyle(fontSize: 14, color: AppColors.blackColor),
+                  ),
+                  Text(
+                    numberGameCubit.attemptedCount.toString(),
+                    style: const TextStyle(
+                        fontSize: 14, color: AppColors.redColor),
+                  ),
+                  const Text(
+                    ' Times',
+                    style: TextStyle(fontSize: 14, color: AppColors.blackColor),
+                  )
+                ],
+              ),
             ),
             SizedBox(
               width: size.width,
@@ -74,7 +75,7 @@ class MyHomePage extends StatelessWidget {
                           color: Colors.grey.shade300,
                           borderRadius: BorderRadius.circular(8)),
                       child: Center(
-                          child: !numberGameCubit.trueAnswer
+                          child: false
                               ? Text(numberGameCubit.randomNumber[index]
                                   .toString())
                               : const SizedBox()),
@@ -126,13 +127,13 @@ class MyHomePage extends StatelessWidget {
                                                   .answerNumber[index]
                                                   .toString())
                                               : const SizedBox(
-                                                  child: Text('-1'),
+                                                  child: Text(''),
                                                 )),
                                 ),
                               );
                             },
                             onAcceptWithDetails: (details) {
-                              selectedAnswer(
+                              numberGameCubit.selectedAnswer(
                                   details: details,
                                   context: context,
                                   index: index);
@@ -201,34 +202,15 @@ class MyHomePage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               child: GestureDetector(
                 onTap: () {
-                  if (!numberGameCubit.answerNumber.contains(-1)) {
-                    int totalRightAnswer = 0;
-                    for (var i = 0;
-                        i < numberGameCubit.randomNumber.length;
-                        i++) {
-                      if (numberGameCubit.randomNumber[i] ==
-                          numberGameCubit.answerNumber[i]) {
-                        totalRightAnswer += 1;
-                      }
-                    }
-                    if (totalRightAnswer ==
-                        numberGameCubit.answerNumber.length) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('You Win'),
-                      ));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            'You Loss, ${totalRightAnswer == -1 ? 0 : totalRightAnswer} Correct Answer'),
-                      ));
-                      // numberGameCubit.restart();
-                    }
-                  }
+                  numberGameCubit.checkAnswer(context: context);
                 },
                 child: Container(
                   height: 60,
                   width: size.width,
-                  decoration: const BoxDecoration(color: AppColors.amberColor),
+                  decoration: BoxDecoration(
+                      color: numberGameCubit.answerPicked
+                          ? AppColors.amberColor
+                          : AppColors.greyColor),
                   child: const Center(
                       child: Text(
                     'Check Now',
@@ -248,74 +230,86 @@ class MyHomePage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Center(
-                      child: SizedBox(
-                        height: 60,
-                        width: size.width,
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: numberGameCubit.pickNumber.length,
-                                scrollDirection: Axis.horizontal,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4.0),
-                                    child: SizedBox(
-                                      height: 60,
-                                      width: 50,
-                                      // color: Colors.amber,
-                                      child: Draggable(
-                                        data: numberGameCubit.pickNumber[index],
-                                        feedback: Container(
-                                          height: 60,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey.shade300,
-                                              border: Border.all(
-                                                  color: Colors.black),
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          child: Center(
-                                              child: Text(
-                                            numberGameCubit.pickNumber[index]
-                                                .toString(),
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black,
-                                                decoration:
-                                                    TextDecoration.none),
-                                          )),
-                                        ),
-                                        childWhenDragging: const SizedBox(),
-                                        child: Container(
-                                          height: 60,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey.shade300,
-                                              border: Border.all(
-                                                  color: Colors.black),
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          child: Center(
-                                              child: Text(
-                                            numberGameCubit.pickNumber[index]
-                                                .toString(),
-                                            style:
-                                                const TextStyle(fontSize: 20),
-                                          )),
-                                        ),
+                        child: !numberGameCubit.answerPicked
+                            ? SizedBox(
+                                height: 60,
+                                width: size.width,
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: ListView.builder(
+                                        itemCount:
+                                            numberGameCubit.pickNumber.length,
+                                        scrollDirection: Axis.horizontal,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4.0),
+                                            child: SizedBox(
+                                              height: 60,
+                                              width: 50,
+                                              // color: Colors.amber,
+                                              child: Draggable(
+                                                data: numberGameCubit
+                                                    .pickNumber[index],
+                                                feedback: Container(
+                                                  height: 60,
+                                                  width: 50,
+                                                  decoration: BoxDecoration(
+                                                      color:
+                                                          Colors.grey.shade300,
+                                                      border: Border.all(
+                                                          color: Colors.black),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                                  child: Center(
+                                                      child: Text(
+                                                    numberGameCubit
+                                                        .pickNumber[index]
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                        fontSize: 20,
+                                                        color: Colors.black,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .none),
+                                                  )),
+                                                ),
+                                                childWhenDragging:
+                                                    const SizedBox(),
+                                                child: Container(
+                                                  height: 60,
+                                                  width: 50,
+                                                  decoration: BoxDecoration(
+                                                      color:
+                                                          Colors.grey.shade300,
+                                                      border: Border.all(
+                                                          color: Colors.black),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                                  child: Center(
+                                                      child: Text(
+                                                    numberGameCubit
+                                                        .pickNumber[index]
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                        fontSize: 20),
+                                                  )),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                                  ],
+                                ),
+                              )
+                            : Text(
+                                'You have ${numberGameCubit.totalRightAnswer} Correct Answer')),
                   ),
                 )),
           ],
