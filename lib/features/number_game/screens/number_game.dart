@@ -1,4 +1,5 @@
 import 'package:dazll_demo/constants/app_colors.dart';
+import 'package:dazll_demo/constants/app_enums.dart';
 import 'package:dazll_demo/features/number_game/cubits/number_game_cubit.dart';
 import 'package:dazll_demo/features/number_game/cubits/number_game_state.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class MyHomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Demo'),
+        title: const Text('Number Gmae'),
         centerTitle: true,
       ),
       body: SizedBox(
@@ -28,10 +29,10 @@ class MyHomePage extends StatelessWidget {
             Container(
               height: size.height * 0.15,
               decoration: const BoxDecoration(),
-              child: const Center(
+              child: Center(
                   child: Text(
-                'Level: 1',
-                style: TextStyle(
+                getLevelTitle(context: context),
+                style: const TextStyle(
                     fontSize: 30,
                     color: AppColors.blackColor,
                     fontWeight: FontWeight.bold),
@@ -75,7 +76,7 @@ class MyHomePage extends StatelessWidget {
                           color: Colors.grey.shade300,
                           borderRadius: BorderRadius.circular(8)),
                       child: Center(
-                          child: false
+                          child: numberGameCubit.winnerTime || true
                               ? Text(numberGameCubit.randomNumber[index]
                                   .toString())
                               : const SizedBox()),
@@ -312,10 +313,44 @@ class MyHomePage extends StatelessWidget {
                                 'You have ${numberGameCubit.totalRightAnswer} Correct Answer')),
                   ),
                 )),
+            if (!numberGameCubit.answerPicked)
+              GestureDetector(
+                onTap: () {
+                  numberGameCubit.selecteRandomAnswer();
+                },
+                child: const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 15, 20, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('Pick random number'),
+                      Icon(
+                        Icons.shuffle_sharp,
+                        color: AppColors.amberColor,
+                      )
+                    ],
+                  ),
+                ),
+              )
           ],
         ),
       ),
     );
+  }
+
+  String getLevelTitle({required BuildContext context}) {
+    NumberGameCubit numberGameCubit = context.read<NumberGameCubit>();
+
+    switch (numberGameCubit.currentLevel) {
+      case GameLevel.level_1:
+        return 'Level 1';
+      case GameLevel.level_2:
+        return 'Level 2';
+      case GameLevel.level_3:
+        return 'Level 3';
+      default:
+        return 'Level 1';
+    }
   }
 
   @override
