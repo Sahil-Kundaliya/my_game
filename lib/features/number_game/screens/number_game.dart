@@ -7,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../resposinve.dart';
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-  static const String myHomePage = '/MyHomePage';
+class NumberGameScreen extends StatelessWidget {
+  const NumberGameScreen({super.key});
+  static const String numberGameScreen = '/NumberGameScreen';
 
   Widget getScreen({required BuildContext context, NumberGameState? state}) {
     final size = MediaQuery.sizeOf(context);
@@ -233,82 +233,78 @@ class MyHomePage extends StatelessWidget {
                     child: Center(
                         child: !numberGameCubit.answerPicked
                             ? SizedBox(
-                                height: 60,
+                                // height: 60,
                                 width: size.width,
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: ListView.builder(
-                                        itemCount:
-                                            numberGameCubit.pickNumber.length,
-                                        scrollDirection: Axis.horizontal,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 4.0),
-                                            child: SizedBox(
-                                              height: 60,
-                                              width: 50,
-                                              // color: Colors.amber,
-                                              child: Draggable(
-                                                data: numberGameCubit
-                                                    .pickNumber[index],
-                                                feedback: Container(
-                                                  height: 60,
-                                                  width: 50,
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          Colors.grey.shade300,
-                                                      border: Border.all(
-                                                          color: Colors.black),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                      child: Text(
-                                                    numberGameCubit
-                                                        .pickNumber[index]
-                                                        .toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 20,
-                                                        color: Colors.black,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .none),
-                                                  )),
-                                                ),
-                                                childWhenDragging:
-                                                    const SizedBox(),
-                                                child: Container(
-                                                  height: 60,
-                                                  width: 50,
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          Colors.grey.shade300,
-                                                      border: Border.all(
-                                                          color: Colors.black),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  child: Center(
-                                                      child: Text(
-                                                    numberGameCubit
-                                                        .pickNumber[index]
-                                                        .toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 20),
-                                                  )),
-                                                ),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                  child: Wrap(
+                                    alignment: WrapAlignment.center,
+                                    spacing: 1,
+                                    runSpacing: 10,
+                                    children: List.generate(
+                                      numberGameCubit.pickNumber.length,
+                                      (index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 4.0),
+                                          child: SizedBox(
+                                            height: 60,
+                                            width: 50,
+                                            // color: Colors.amber,
+                                            child: Draggable(
+                                              data: numberGameCubit
+                                                  .pickNumber[index],
+                                              feedback: Container(
+                                                height: 60,
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.grey.shade300,
+                                                    border: Border.all(
+                                                        color: Colors.black),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                                child: Center(
+                                                    child: Text(
+                                                  numberGameCubit
+                                                      .pickNumber[index]
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.black,
+                                                      decoration:
+                                                          TextDecoration.none),
+                                                )),
+                                              ),
+                                              childWhenDragging:
+                                                  const SizedBox(),
+                                              child: Container(
+                                                height: 60,
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.grey.shade300,
+                                                    border: Border.all(
+                                                        color: Colors.black),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                                child: Center(
+                                                    child: Text(
+                                                  numberGameCubit
+                                                      .pickNumber[index]
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontSize: 20),
+                                                )),
                                               ),
                                             ),
-                                          );
-                                        },
-                                      ),
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  ],
-                                ),
-                              )
+                                  ),
+                                ))
                             : Text(
                                 'You have ${numberGameCubit.totalRightAnswer} Correct Answer')),
                   ),

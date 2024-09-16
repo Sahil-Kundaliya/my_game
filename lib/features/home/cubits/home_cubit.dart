@@ -7,8 +7,8 @@ class HomeCubit extends Cubit<HomeState> {
     loadingGames();
   }
   List<String> allGames = [
-    'Game 1',
-    'Game 2',
+    'Number Game',
+    'Thumb Game',
     'Game 3',
     'Game 4',
   ];

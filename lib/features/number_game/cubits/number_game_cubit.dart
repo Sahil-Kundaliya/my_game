@@ -19,7 +19,7 @@ class NumberGameCubit extends Cubit<NumberGameState> {
   int attemptedCount = 0;
   int totalRightAnswer = 0;
   List<int> checkedAnswerList = [];
-  GameLevel? currentLevel;
+  GameLevel currentLevel = GameLevel.level_1;
   bool winnerTime = false;
 
   loadLevelData() {

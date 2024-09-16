@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../features/home/screens/game_menu.dart';
 import '../features/number_game/screens/number_game.dart';
+import '../features/thumb_game/screens/thumb_page.dart';
 import '../splash/splash_page.dart';
 
 class AppRoutes {
@@ -12,7 +13,8 @@ class AppRoutes {
 
   Map<String, Widget Function(BuildContext)> routes = {
     '/': (context) => const SplashScreen(),
-    MyHomePage.myHomePage: (context) => const MyHomePage(),
+    NumberGameScreen.numberGameScreen: (context) => const NumberGameScreen(),
     GameMenuScreen.gameMenuScreen: (context) => const GameMenuScreen(),
+    ThumbGameScreen.thumbGameScreen: (context) => const ThumbGameScreen(),
   };
 }

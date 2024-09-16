@@ -1,11 +1,12 @@
 import 'package:dazll_demo/constants/app_colors.dart';
-import 'package:dazll_demo/features/home/cubits/home_cubite.dart';
+import 'package:dazll_demo/features/home/cubits/home_cubit.dart';
 import 'package:dazll_demo/features/home/cubits/home_state.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../number_game/screens/number_game.dart';
+import '../../thumb_game/screens/thumb_page.dart';
 
 class GameMenuScreen extends StatelessWidget {
   const GameMenuScreen({super.key});
@@ -14,10 +15,12 @@ class GameMenuScreen extends StatelessWidget {
   selecteGame({required int gameIndex, required BuildContext context}) {
     switch (gameIndex) {
       case 0:
-        Navigator.pushNamed(context, MyHomePage.myHomePage);
+        Navigator.pushNamed(context, NumberGameScreen.numberGameScreen);
+      case 1:
+        Navigator.pushNamed(context, ThumbGameScreen.thumbGameScreen);
         break;
       default:
-        Navigator.pushNamed(context, MyHomePage.myHomePage);
+        Navigator.pushNamed(context, NumberGameScreen.numberGameScreen);
     }
   }
 
