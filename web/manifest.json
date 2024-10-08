@@ -1,6 +1,6 @@
 {
-    "name": "dazll_demo",
-    "short_name": "dazll_demo",
+    "name": "my_game",
+    "short_name": "my_game",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,7 +1,7 @@
-import 'package:dazll_demo/constants/app_colors.dart';
-import 'package:dazll_demo/features/thumb_game/cubits/thumb_cubit.dart';
-import 'package:dazll_demo/features/thumb_game/cubits/thumb_state.dart';
-import 'package:dazll_demo/utils/dimens.dart';
+import 'package:my_game/constants/app_colors.dart';
+import 'package:my_game/features/thumb_game/cubits/thumb_cubit.dart';
+import 'package:my_game/features/thumb_game/cubits/thumb_state.dart';
+import 'package:my_game/utils/dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

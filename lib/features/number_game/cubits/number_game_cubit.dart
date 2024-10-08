@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:dazll_demo/constants/app_enums.dart';
-import 'package:dazll_demo/features/number_game/cubits/number_game_state.dart';
+import 'package:my_game/constants/app_enums.dart';
+import 'package:my_game/features/number_game/cubits/number_game_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,7 +19,7 @@ class NumberGameCubit extends Cubit<NumberGameState> {
   int attemptedCount = 0;
   int totalRightAnswer = 0;
   List<int> checkedAnswerList = [];
-  GameLevel currentLevel = GameLevel.level_1;
+  GameLevel? currentLevel;
   bool winnerTime = false;
 
   loadLevelData() {
@@ -39,23 +39,23 @@ class NumberGameCubit extends Cubit<NumberGameState> {
   }
 
   loadLevel_1Data() {
-    randomNumber = [1, 2, 3, 4, 5, 6];
-    answerNumber = [-1, -1, -1, -1, -1, -1];
-    pickNumber = [1, 2, 3, 4, 5, 6];
+    randomNumber = [1, 2, 3];
+    answerNumber = [-1, -1, -1];
+    pickNumber = [1, 2, 3];
     loadInitialData();
   }
 
   loadLevel_2Data() {
-    randomNumber = [1, 2, 3, 4, 5, 6, 7, 8];
-    answerNumber = [-1, -1, -1, -1, -1, -1, -1, -1];
-    pickNumber = [1, 2, 3, 4, 5, 6, 7, 8];
+    randomNumber = [1, 2, 3, 4];
+    answerNumber = [-1, -1, -1, -1];
+    pickNumber = [1, 2, 3, 4];
     loadInitialData();
   }
 
   loadLevel_3Data() {
-    randomNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    answerNumber = [-1, -1, -1, -1, -1, -1, -1, -1, -1];
-    pickNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    randomNumber = [1, 2, 3, 4, 5, 6];
+    answerNumber = [-1, -1, -1, -1, -1, -1];
+    pickNumber = [1, 2, 3, 4, 5, 6];
     loadInitialData();
   }
 

@@ -1,4 +1,4 @@
-import 'package:dazll_demo/features/home/cubits/home_state.dart';
+import 'package:my_game/features/home/cubits/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

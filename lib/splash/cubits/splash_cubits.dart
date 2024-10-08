@@ -1,5 +1,5 @@
-import 'package:dazll_demo/features/home/screens/game_menu.dart';
-import 'package:dazll_demo/splash/cubits/splash_state.dart';
+import 'package:my_game/features/home/screens/game_menu.dart';
+import 'package:my_game/splash/cubits/splash_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

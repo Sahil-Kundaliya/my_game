@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:dazll_demo/features/number_game/screens/number_game.dart';
-import 'package:dazll_demo/features/thumb_game/cubits/thumb_state.dart';
-import 'package:dazll_demo/utils/dimens.dart';
+import 'package:my_game/features/number_game/screens/number_game.dart';
+import 'package:my_game/features/thumb_game/cubits/thumb_state.dart';
+import 'package:my_game/utils/dimens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

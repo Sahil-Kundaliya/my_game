@@ -1,4 +1,4 @@
-package com.example.dazll_demo
+package com.example.my_game
 
 import io.flutter.embedding.android.FlutterActivity
 
