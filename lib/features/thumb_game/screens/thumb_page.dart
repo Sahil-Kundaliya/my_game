@@ -30,7 +30,8 @@ class ThumbGameScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          thumbCubit.updateScore(player1: false);
+                          thumbCubit.updateScore(
+                              player1: false, context: context);
                         },
                         child: Container(
                           width: Dimenstions.instance.screenWidth,
@@ -51,7 +52,8 @@ class ThumbGameScreen extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          thumbCubit.updateScore(player1: true);
+                          thumbCubit.updateScore(
+                              player1: true, context: context);
                         },
                         child: Container(
                           width: Dimenstions.instance.screenWidth,

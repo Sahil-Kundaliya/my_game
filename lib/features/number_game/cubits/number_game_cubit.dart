@@ -164,7 +164,7 @@ class NumberGameCubit extends Cubit<NumberGameState> {
     updateState();
   }
 
-  selecteRandomAnswer() {
+  selectRandomAnswer() {
     answerNumber = pickNumber;
     answerNumber.shuffle();
     answerPicked = true;

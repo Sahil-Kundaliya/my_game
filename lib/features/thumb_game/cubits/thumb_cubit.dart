@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:developer';
 
-import 'package:my_game/features/number_game/screens/number_game.dart';
+import 'package:my_game/features/home/screens/game_menu.dart';
 import 'package:my_game/features/thumb_game/cubits/thumb_state.dart';
 import 'package:my_game/utils/dimens.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,7 +29,7 @@ class ThumbCubit extends Cubit<ThumbState> {
     updateState();
   }
 
-  updateScore({required bool player1}) {
+  updateScore({required bool player1, required BuildContext context}) {
     double deviceHeight = Dimenstions.instance.screenHeight;
     if (winner.isEmpty) {
       log('SSS player_2Score $player_2Score');
@@ -54,13 +55,25 @@ class ThumbCubit extends Cubit<ThumbState> {
       }
       if (player_1Score >= deviceHeight) {
         winner = 'Red';
+        restartGame(context: context);
       } else if (player_2Score >= deviceHeight) {
         winner = 'Blue';
+        restartGame(context: context);
       }
       log('SSS player_2Score $player_2Score');
       log('SSS player_1Score $player_1Score');
       updateState();
     }
+  }
+
+  restartGame({required BuildContext context}) {
+    Future.delayed(const Duration(seconds: 5), () {
+      if (context.mounted) {
+        loadPlayerData(context: context);
+        Navigator.pushNamedAndRemoveUntil(
+            context, GameMenuScreen.gameMenuScreen, (route) => false);
+      }
+    });
   }
 
   updateState() {

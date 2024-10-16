@@ -1,6 +1,8 @@
 import 'package:my_game/features/home/cubits/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_game/features/number_game/screens/number_game.dart';
+import 'package:my_game/features/thumb_game/screens/thumb_page.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitialState()) {
@@ -19,7 +21,15 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeShowGamesState());
   }
 
-  selectGame({required BuildContext context}) {
-    Navigator.of(context).pushNamed('routeName');
+  selectGame({required int gameIndex, required BuildContext context}) {
+    switch (gameIndex) {
+      case 0:
+        Navigator.pushNamed(context, NumberGameScreen.numberGameScreen);
+      case 1:
+        Navigator.pushNamed(context, ThumbGameScreen.thumbGameScreen);
+        break;
+      default:
+        Navigator.pushNamed(context, NumberGameScreen.numberGameScreen);
+    }
   }
 }

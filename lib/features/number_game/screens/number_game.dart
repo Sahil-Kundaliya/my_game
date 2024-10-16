@@ -25,6 +25,7 @@ class NumberGameScreen extends StatelessWidget {
         width: size.width,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               height: size.height * 0.15,
@@ -310,24 +311,43 @@ class NumberGameScreen extends StatelessWidget {
                   ),
                 )),
             if (!numberGameCubit.answerPicked)
-              GestureDetector(
-                onTap: () {
-                  numberGameCubit.selecteRandomAnswer();
-                },
-                child: const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 15, 20, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('Pick random number'),
-                      Icon(
-                        Icons.shuffle_sharp,
-                        color: AppColors.amberColor,
-                      )
-                    ],
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16, top: 10),
+                  child: ElevatedButton(
+
+                    onPressed: () {
+                      numberGameCubit.selectRandomAnswer();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey, // Background color
+
+                      elevation: 5, // Shadow under the button
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20), // Rounded corners
+                      ),
+                      textStyle: const TextStyle(
+                          fontSize: 18, color: AppColors.blackColor),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Pick random number',
+                          style:
+                              TextStyle(fontSize: 18, color: AppColors.blackColor),
+                        ),
+                        Icon(
+                          Icons.shuffle_sharp,
+                          color: AppColors.amberColor,
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              )
+              ),
           ],
         ),
       ),

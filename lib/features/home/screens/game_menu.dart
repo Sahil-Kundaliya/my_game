@@ -12,18 +12,6 @@ class GameMenuScreen extends StatelessWidget {
   const GameMenuScreen({super.key});
   static const String gameMenuScreen = '/GameMenuScreen';
 
-  selecteGame({required int gameIndex, required BuildContext context}) {
-    switch (gameIndex) {
-      case 0:
-        Navigator.pushNamed(context, NumberGameScreen.numberGameScreen);
-      case 1:
-        Navigator.pushNamed(context, ThumbGameScreen.thumbGameScreen);
-        break;
-      default:
-        Navigator.pushNamed(context, NumberGameScreen.numberGameScreen);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -39,6 +27,7 @@ class GameMenuScreen extends StatelessWidget {
             return Scaffold(
               appBar: AppBar(
                 title: const Text('Game Menu'),
+                centerTitle: true,
               ),
               body: SizedBox(
                 height: size.height,
@@ -52,7 +41,9 @@ class GameMenuScreen extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                         child: GestureDetector(
                           onTap: () {
-                            selecteGame(gameIndex: index, context: context);
+                            context
+                                .read<HomeCubit>()
+                                .selectGame(gameIndex: index, context: context);
                           },
                           child: Container(
                             height: 50,
