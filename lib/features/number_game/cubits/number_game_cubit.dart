@@ -64,6 +64,9 @@ class NumberGameCubit extends Cubit<NumberGameState> {
       currentLevel = GameLevel.level_2;
     } else if (currentLevel == GameLevel.level_2) {
       currentLevel = GameLevel.level_3;
+    } else if (currentLevel == GameLevel.level_3) {
+      currentLevel = GameLevel.restart;
+      attemptedCount = 0;
     } else {
       currentLevel = GameLevel.level_1;
     }
@@ -165,7 +168,16 @@ class NumberGameCubit extends Cubit<NumberGameState> {
   }
 
   selectRandomAnswer() {
-    answerNumber = pickNumber;
+    if (answerNumber.length == pickNumber.length) {
+      answerNumber = pickNumber;
+    } else {
+      for (var i = 0; i < answerNumber.length; i++) {
+        if (answerNumber[i] != -1) {
+          pickNumber.add(answerNumber[i]);
+        }
+      }
+      answerNumber = pickNumber;
+    }
     answerNumber.shuffle();
     answerPicked = true;
     log('SSS answer list is =- $answerNumber');

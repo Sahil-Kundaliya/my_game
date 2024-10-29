@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashCubit extends Cubit<SplashState> {
   SplashCubit(BuildContext context) : super(SplashPageState()) {
-    showSlpashPage(context);
+    showSplashPage(context);
   }
 
-  void showSlpashPage(BuildContext context) {
+  void showSplashPage(BuildContext context) {
     Future.delayed(const Duration(seconds: 3)).then(
       (value) {
         return Navigator.of(context)
