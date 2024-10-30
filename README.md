@@ -10,3 +10,6 @@ To get started with running the game locally or to contribute, follow these step
    ```bash
    git clone https://github.com/yourusername/my_game.git
    cd my_game
+
+
+   Did it
