@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_game/features/number_game/screens/number_game.dart';
 import 'package:my_game/features/thumb_game/screens/thumb_page.dart';
+import 'package:my_game/features/tic_tac_toe_game/screens/game_screen.dart';
+import 'package:my_game/features/tic_tac_toe_game/screens/tic_tac_toe_game_screen.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitialState()) {
@@ -11,7 +13,7 @@ class HomeCubit extends Cubit<HomeState> {
   List<String> allGames = [
     'Number Game',
     'Thumb Game',
-    'Game 3',
+    'Tic Tac Toe',
     'Game 4',
   ];
 
@@ -27,6 +29,9 @@ class HomeCubit extends Cubit<HomeState> {
         Navigator.pushNamed(context, NumberGameScreen.numberGameScreen);
       case 1:
         Navigator.pushNamed(context, ThumbGameScreen.thumbGameScreen);
+        break;
+      case 2:
+        Navigator.pushNamed(context, TicTacToeGameScreen.ticTacToeGameScreen);
         break;
       default:
         Navigator.pushNamed(context, NumberGameScreen.numberGameScreen);
