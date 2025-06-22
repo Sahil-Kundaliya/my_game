@@ -352,7 +352,7 @@ class NumberGameScreen extends StatelessWidget {
                         backgroundColor: Colors.grey, // Background color
 
                         elevation: 5, // Shadow under the button
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.circular(20), // Rounded corners

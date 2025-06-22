@@ -49,8 +49,8 @@ class TicTacToeCubite extends Cubit<TicTacToeState> {
   }
 
   void onTap(int index) {
-    if (board![index] == "") {
-      board![index] = lastValue;
+    if (board[index] == "") {
+      board[index] = lastValue;
       turn++;
       gameOver = winnerCheck(lastValue, index, scoreboard, 3);
 

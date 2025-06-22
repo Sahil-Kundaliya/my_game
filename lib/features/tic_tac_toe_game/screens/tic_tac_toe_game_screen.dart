@@ -92,7 +92,7 @@ class TicTacToeGameScreen extends StatelessWidget {
                                     ticTacToeCubite.board[index],
                                     style: TextStyle(
                                       color:
-                                          ticTacToeCubite.board![index] == "X"
+                                          ticTacToeCubite.board[index] == "X"
                                               ? Colors.blue
                                               : Colors.pink,
                                       fontSize: 54.0,

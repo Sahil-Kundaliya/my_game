@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_game/features/tic_tac_toe_game/screens/game_screen.dart';
+import 'package:my_game/features/brain_tap/screens/brain_tap_page.dart';
 import 'package:my_game/features/tic_tac_toe_game/screens/tic_tac_toe_game_screen.dart';
 
 import '../features/home/screens/game_menu.dart';
@@ -20,5 +20,6 @@ class AppRoutes {
     ThumbGameScreen.thumbGameScreen: (context) => const ThumbGameScreen(),
     TicTacToeGameScreen.ticTacToeGameScreen: (context) =>
         const TicTacToeGameScreen(),
+    BrainTapScreen.brainTapScreen: (context) => const BrainTapScreen(),
   };
 }

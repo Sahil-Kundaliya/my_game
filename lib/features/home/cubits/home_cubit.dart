@@ -1,9 +1,9 @@
+import 'package:my_game/features/brain_tap/screens/brain_tap_page.dart';
 import 'package:my_game/features/home/cubits/home_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_game/features/number_game/screens/number_game.dart';
 import 'package:my_game/features/thumb_game/screens/thumb_page.dart';
-import 'package:my_game/features/tic_tac_toe_game/screens/game_screen.dart';
 import 'package:my_game/features/tic_tac_toe_game/screens/tic_tac_toe_game_screen.dart';
 
 class HomeCubit extends Cubit<HomeState> {
@@ -14,7 +14,8 @@ class HomeCubit extends Cubit<HomeState> {
     'Number Game',
     'Thumb Game',
     'Tic Tac Toe',
-    'Game 4',
+    'Brain Tap',
+    'Game 5',
   ];
 
   loadingGames() async {
@@ -32,6 +33,9 @@ class HomeCubit extends Cubit<HomeState> {
         break;
       case 2:
         Navigator.pushNamed(context, TicTacToeGameScreen.ticTacToeGameScreen);
+        break;
+      case 3:
+        Navigator.pushNamed(context, BrainTapScreen.brainTapScreen);
         break;
       default:
         Navigator.pushNamed(context, NumberGameScreen.numberGameScreen);
