@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_game/constants/app_colors.dart';
 import 'package:my_game/features/brain_tap/cubits/brain_tap_cubit.dart';
 import 'package:my_game/features/brain_tap/cubits/brain_tap_state.dart';
 import 'package:my_game/features/brain_tap/widgets/brain_tap_game_widget.dart';
@@ -13,6 +14,14 @@ class BrainTapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.blackColor,
+      appBar: AppBar(
+        leading: const SizedBox(),
+        title: const Text('Brain Tap'),
+        backgroundColor: AppColors.blackColor,
+        foregroundColor: AppColors.whiteColor,
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: SizedBox(
           height: MediaQuery.sizeOf(context).height,

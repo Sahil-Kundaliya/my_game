@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_game/constants/app_colors.dart';
+import 'package:my_game/constants/app_images.dart';
 
 class SelectGameIndex extends StatelessWidget {
   const SelectGameIndex(
@@ -10,14 +11,29 @@ class SelectGameIndex extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Container(
+            height: 280,
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                image: const DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage(AppImages.brainTapGameImage))),
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
         const Text(
           "Brain Tap",
           style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
-              color: AppColors.blackColor),
+              color: AppColors.whiteColor),
         ),
         const Text(
           "Just pick",

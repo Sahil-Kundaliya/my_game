@@ -1,6 +1,8 @@
 class AppImages {
   // assets images
   static const String numberFun = 'assets/images/number_fun.png';
+  static const String brainTapGameImage = 'assets/images/123_game.png';
+  static const String thumbGameImage = 'assets/images/thumb_game.jpg';
 
   // image URl's
   static const String flagOfIndia =

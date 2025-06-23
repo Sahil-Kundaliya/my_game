@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:my_game/main.dart';
+import 'package:my_game/my_app.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
@@ -28,3 +28,5 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 }
+
+//https://dribbble.com/shots/25374675-Case-Study-MatchCards-Game-Design

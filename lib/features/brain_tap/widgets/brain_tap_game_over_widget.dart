@@ -16,7 +16,7 @@ class BrainTapGameOverWidget extends StatelessWidget {
           style: const TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
-              color: AppColors.blackColor),
+              color: AppColors.whiteColor),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 45),
@@ -53,7 +53,7 @@ class BrainTapGameOverWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: AppColors.blackColor),
                     ),
-                    child: const Text('Restart',
+                    child: const Text('Try again',
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
