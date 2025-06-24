@@ -6,21 +6,25 @@ import 'package:my_game/features/brain_tap/models/number_model.dart';
 import 'package:my_game/utils/global_helper.dart';
 
 class BrainTabCubit extends Cubit<BrainTabState> {
-  BrainTabCubit() : super(BrainTapInitialState()) {
-    emit(BrainTapGameIndexState());
-  }
+  BrainTabCubit() : super(BrainTapInitialState());
+
   List<NumberModel> allNumber = [];
   List<int> selectedNumber = [];
-  int selectedGameIndex = 0;
-  List<int> allGameIndex = [12, 16, 25];
+  int selectedGameIndex = -1;
+  List<int> allGameIndex = [4, 6, 12, 16, 25];
   int gridviewCrossAxisCount = 5;
   Timer? _ticker;
+  Timer? _breakTicker;
   int timerCount = 0;
+  int breakTimerCount = 0;
   bool playerWin = false;
 
-  loadingGames() {
+  loadingGame() {
     allNumber.clear();
-    for (var i = 0; i < selectedGameIndex; i++) {
+
+    var gameIndex = allGameIndex[selectedGameIndex];
+
+    for (var i = 0; i < gameIndex; i++) {
       allNumber.add(NumberModel(
           number: i + 1, numberColor: GlobalHelper.getRandomColor()));
     }
@@ -31,8 +35,8 @@ class BrainTabCubit extends Cubit<BrainTabState> {
 
   double getTimerPercentage() {
     double percentage;
-
-    percentage = ((timerCount * 100) / selectedGameIndex) / 100;
+    var gameIndex = allGameIndex[selectedGameIndex];
+    percentage = ((timerCount * 100) / gameIndex) / 100;
 
     if (percentage <= 0) {
       percentage = 0;
@@ -42,15 +46,18 @@ class BrainTabCubit extends Cubit<BrainTabState> {
     return percentage;
   }
 
-  void changeGameIndex(int nextIndex) {
-    selectedGameIndex = nextIndex;
-    if (selectedGameIndex == 25) {
+  void nextLevel() {
+    selectedGameIndex++;
+    selectedNumber.clear();
+
+    var gameIndex = allGameIndex[selectedGameIndex];
+    if (gameIndex >= 25) {
       gridviewCrossAxisCount = 5;
     } else {
       gridviewCrossAxisCount = 4;
     }
-    loadingGames();
-    emit(BrainTapGamesState());
+    loadingGame();
+    emit(BrainTapGameState());
   }
 
   void _onStartTimer() {
@@ -59,12 +66,32 @@ class BrainTabCubit extends Cubit<BrainTabState> {
 
     _ticker = Timer.periodic(const Duration(seconds: 1), (timer) {
       timerCount++;
-      if (timerCount <= selectedGameIndex) {
-        emit(BrainTapGamesState());
+      var gameIndex = allGameIndex[selectedGameIndex];
+
+      if (timerCount <= gameIndex) {
+        emit(BrainTapGameState());
       } else {
         emit(BrainTapGameOverState());
 
         timer.cancel();
+      }
+    });
+  }
+
+  void _onBreakTimer() {
+    _breakTicker?.cancel(); // cancel any existing timer
+    breakTimerCount = 4;
+
+    emit(BrainTapBreakState());
+
+    _breakTicker = Timer.periodic(const Duration(seconds: 1), (breakTimer) {
+      breakTimerCount--;
+
+      if (breakTimerCount <= 0) {
+        nextLevel();
+        breakTimer.cancel();
+      } else {
+        emit(BrainTapBreakState());
       }
     });
   }
@@ -78,17 +105,29 @@ class BrainTabCubit extends Cubit<BrainTabState> {
     }
 
     if (allNumber.length == selectedNumber.length) {
-      playerWin = true;
+      if (selectedGameIndex == (allNumber.length - 1)) {
+        playerWin = true;
+        emit(BrainTapGameOverState());
+      }
       _ticker?.cancel();
-      emit(BrainTapGameOverState());
+      _onBreakTimer();
 
       //win
     }
+    emit(BrainTapGameState());
+  }
+
+  bool isIndexClicked(int gameIndex) {
+    if (selectedNumber.contains(gameIndex)) {
+      return true;
+    }
+    return false;
   }
 
   void restartGame() {
+    selectedGameIndex = -1;
     playerWin = false;
     selectedNumber.clear();
-    emit(BrainTapGameIndexState());
+    emit(BrainTapInitialState());
   }
 }

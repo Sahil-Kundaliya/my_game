@@ -3,10 +3,8 @@ import 'package:my_game/constants/app_colors.dart';
 import 'package:my_game/constants/app_images.dart';
 
 class SelectGameIndex extends StatelessWidget {
-  const SelectGameIndex(
-      {super.key, required this.allGameIndex, required this.onTap});
-  final List<int> allGameIndex;
-  final Function(int) onTap;
+  const SelectGameIndex({super.key, required this.onStart});
+  final VoidCallback onStart;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +34,7 @@ class SelectGameIndex extends StatelessWidget {
               color: AppColors.whiteColor),
         ),
         const Text(
-          "Just pick",
+          "Start a Game",
           style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -45,32 +43,21 @@ class SelectGameIndex extends StatelessWidget {
         const SizedBox(
           height: 40,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 10,
-          children: List.generate(
-            allGameIndex.length,
-            (index) {
-              return GestureDetector(
-                onTap: () {
-                  onTap(allGameIndex[index]);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppColors.amberColor,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 10),
-                    child: Text(
-                      allGameIndex[index].toString(),
-                      style: const TextStyle(
-                          fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              );
-            },
+        GestureDetector(
+          onTap: () {
+            onStart();
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                color: AppColors.amberColor,
+                borderRadius: BorderRadius.circular(10)),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: Text(
+                "Start",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
         )
       ],
