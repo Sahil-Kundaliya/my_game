@@ -27,8 +27,7 @@ class BrainTapGameWidget extends StatelessWidget {
                   lineWidth: 3.0,
                   percent: brainTabCubit.getTimerPercentage() ?? 0.4,
                   center: Text(
-                    (brainTabCubit.selectedGameIndex - brainTabCubit.timerCount)
-                        .toString(),
+                    brainTabCubit.formattedTime,
                     style: const TextStyle(color: AppColors.whiteColor),
                   ),
                   progressColor: Colors.red,

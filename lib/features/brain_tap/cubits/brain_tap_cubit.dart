@@ -36,7 +36,8 @@ class BrainTabCubit extends Cubit<BrainTabState> {
   double getTimerPercentage() {
     double percentage;
     var gameIndex = allGameIndex[selectedGameIndex];
-    percentage = ((timerCount * 100) / gameIndex) / 100;
+    double timerInSec = gameIndex - (timerCount / 1000);
+    percentage = ((timerInSec * 100) / gameIndex) / 100;
 
     if (percentage <= 0) {
       percentage = 0;
@@ -62,13 +63,15 @@ class BrainTabCubit extends Cubit<BrainTabState> {
 
   void _onStartTimer() {
     _ticker?.cancel(); // cancel any existing timer
-    timerCount = 0;
+    var gameIndex = allGameIndex[selectedGameIndex];
 
-    _ticker = Timer.periodic(const Duration(seconds: 1), (timer) {
-      timerCount++;
-      var gameIndex = allGameIndex[selectedGameIndex];
+    timerCount = gameIndex * 1000; //sec into milliseconds
 
-      if (timerCount <= gameIndex) {
+    _ticker = Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      timerCount -= 16;
+      var timerIndex = timerCount / 1000; // milliseconds into sec
+
+      if (timerIndex >= 0) {
         emit(BrainTapGameState());
       } else {
         emit(BrainTapGameOverState());
@@ -129,5 +132,12 @@ class BrainTabCubit extends Cubit<BrainTabState> {
     playerWin = false;
     selectedNumber.clear();
     emit(BrainTapInitialState());
+  }
+
+  String get formattedTime {
+    int seconds = timerCount ~/ 1000;
+    int millis =
+        ((timerCount % 1000) / (1000 / 60)).floor(); // convert ms to 0–59 scale
+    return '$seconds:${millis.toString().padLeft(2, '0')}';
   }
 }

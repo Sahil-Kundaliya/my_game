@@ -32,6 +32,7 @@ class BrainTapScreen extends StatelessWidget {
               child: BlocBuilder<BrainTabCubit, BrainTabState>(
                   builder: (context, state) {
                 var brainTabCubit = context.read<BrainTabCubit>();
+
                 if (state is BrainTapInitialState) {
                   return SelectGameIndex(
                     onStart: () {
@@ -39,9 +40,11 @@ class BrainTapScreen extends StatelessWidget {
                     },
                   );
                 }
+
                 if (state is BrainTapGameState) {
                   return const BrainTapGameWidget();
                 }
+
                 if (state is BrainTapGameOverState) {
                   return BrainTapGameOverWidget(
                     onRestart: () {
@@ -50,6 +53,7 @@ class BrainTapScreen extends StatelessWidget {
                     isGameWin: brainTabCubit.playerWin,
                   );
                 }
+
                 if (state is BrainTapBreakState) {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
