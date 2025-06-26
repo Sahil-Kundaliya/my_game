@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_game/constants/app_colors.dart';
@@ -9,9 +10,14 @@ import 'package:my_game/features/brain_tap/models/timer_text_model.dart';
 import 'package:my_game/utils/global_helper.dart';
 
 class BrainTabCubit extends Cubit<BrainTabState> {
-  BrainTabCubit() : super(BrainTapInitialState());
+  BrainTabCubit() : super(BrainTapInitialState()) {
+    confettiController =
+        ConfettiController(duration: const Duration(days: 365));
+  }
 
   List<NumberModel> allNumber = [];
+  late ConfettiController confettiController;
+
   List<int> selectedNumber = [];
   int selectedGameIndex = -1;
 
@@ -127,6 +133,7 @@ class BrainTabCubit extends Cubit<BrainTabState> {
       if (selectedGameIndex == (allGameIndex.length - 1)) {
         playerWin = true;
         emit(BrainTapGameOverState());
+        play();
         _ticker?.cancel();
         return;
       }
@@ -146,6 +153,7 @@ class BrainTabCubit extends Cubit<BrainTabState> {
   }
 
   void restartGame() {
+    dispose();
     selectedGameIndex = -1;
     playerWin = false;
     selectedNumber.clear();
@@ -159,5 +167,15 @@ class BrainTabCubit extends Cubit<BrainTabState> {
     String time = '$seconds:${millis.toString().padLeft(2, '0')}';
     Color timerColor = seconds <= 5 ? AppColors.redColor : AppColors.whiteColor;
     return TimerTextModel(timerValue: time, timerColor: timerColor);
+  }
+
+  void dispose() {
+    confettiController.stop();
+  }
+
+  void play() {
+    // confettiController =
+    //     ConfettiController(duration: const Duration(days: 365));
+    confettiController.play();
   }
 }

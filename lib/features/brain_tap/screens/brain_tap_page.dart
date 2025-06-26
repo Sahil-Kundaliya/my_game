@@ -2,7 +2,6 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_game/constants/app_colors.dart';
-import 'package:my_game/constants/app_text_styles.dart';
 import 'package:my_game/features/brain_tap/cubits/brain_tap_cubit.dart';
 import 'package:my_game/features/brain_tap/cubits/brain_tap_state.dart';
 import 'package:my_game/features/brain_tap/widgets/brain_tap_game_break_widget.dart';
@@ -70,22 +69,24 @@ class BrainTapScreen extends StatelessWidget {
                 ),
               ),
             ),
+            Align(
+              alignment: Alignment.topCenter, // Or any position
+              child: ConfettiWidget(
+                confettiController: brainTabCubit.confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: true,
+                emissionFrequency: 0.05, // Adjust for density
+                numberOfParticles: 10,
+                colors: const [
+                  Colors.green,
+                  Colors.blue,
+                  Colors.pink,
+                  Colors.orange,
+                  Colors.purple
+                ],
+              ),
+            ),
           ],
-          // Align(
-          //   alignment: Alignment.topCenter, // Or any position
-          //   child: ConfettiWidget(
-          //     confettiController: _controller,
-          //     blastDirectionality: BlastDirectionality.explosive,
-          //     shouldLoop: false,
-          //     colors: const [
-          //       Colors.green,
-          //       Colors.blue,
-          //       Colors.pink,
-          //       Colors.orange,
-          //       Colors.purple
-          //     ],
-          //   ),
-          // ),
         );
       }),
     );
