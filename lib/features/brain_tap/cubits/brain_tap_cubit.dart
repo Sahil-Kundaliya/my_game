@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_game/constants/app_colors.dart';
 import 'package:my_game/features/brain_tap/cubits/brain_tap_state.dart';
 import 'package:my_game/features/brain_tap/models/number_model.dart';
+import 'package:my_game/features/brain_tap/models/timer_text_model.dart';
 import 'package:my_game/utils/global_helper.dart';
 
 class BrainTabCubit extends Cubit<BrainTabState> {
@@ -11,7 +14,17 @@ class BrainTabCubit extends Cubit<BrainTabState> {
   List<NumberModel> allNumber = [];
   List<int> selectedNumber = [];
   int selectedGameIndex = -1;
-  List<int> allGameIndex = [4, 6, 12, 16, 25];
+
+  List<int> allGameIndex = [4, 6, 12, 16, 25, 30, 40];
+  List<String> allGameLevel = [
+    "Newbie", // 4
+    "Beginner", // 6
+    "Rookie", // 12
+    "Intermediate", // 16
+    "Advanced", // 25
+    "Expert", // 30
+    "Master" // 40
+  ];
   int gridviewCrossAxisCount = 5;
   Timer? _ticker;
   Timer? _breakTicker;
@@ -52,7 +65,10 @@ class BrainTabCubit extends Cubit<BrainTabState> {
     selectedNumber.clear();
 
     var gameIndex = allGameIndex[selectedGameIndex];
-    if (gameIndex >= 25) {
+    if (gameIndex > 25) {
+      gridviewCrossAxisCount = 6;
+    }
+    if (gameIndex == 25) {
       gridviewCrossAxisCount = 5;
     } else {
       gridviewCrossAxisCount = 4;
@@ -108,9 +124,11 @@ class BrainTabCubit extends Cubit<BrainTabState> {
     }
 
     if (allNumber.length == selectedNumber.length) {
-      if (selectedGameIndex == (allNumber.length - 1)) {
+      if (selectedGameIndex == (allGameIndex.length - 1)) {
         playerWin = true;
         emit(BrainTapGameOverState());
+        _ticker?.cancel();
+        return;
       }
       _ticker?.cancel();
       _onBreakTimer();
@@ -134,10 +152,12 @@ class BrainTabCubit extends Cubit<BrainTabState> {
     emit(BrainTapInitialState());
   }
 
-  String get formattedTime {
+  TimerTextModel get formattedTime {
     int seconds = timerCount ~/ 1000;
     int millis =
         ((timerCount % 1000) / (1000 / 60)).floor(); // convert ms to 0–59 scale
-    return '$seconds:${millis.toString().padLeft(2, '0')}';
+    String time = '$seconds:${millis.toString().padLeft(2, '0')}';
+    Color timerColor = seconds <= 5 ? AppColors.redColor : AppColors.whiteColor;
+    return TimerTextModel(timerValue: time, timerColor: timerColor);
   }
 }
