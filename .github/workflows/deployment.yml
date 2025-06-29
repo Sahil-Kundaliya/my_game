@@ -16,10 +16,6 @@ on:
         description: 'App version (e.g., 1.0.0)'
         required: true
         type: string
-      firebase_token:
-        description: 'Firebase token (if not using secret)'
-        required: false
-        type: string
   push:
     branches:
       - main
@@ -31,18 +27,35 @@ jobs:
       BUILD_MODE: ${{ github.event.inputs.build_mode || 'release' }}
       APP_VERSION: ${{ github.event.inputs.app_version }}
       BUILD_NUMBER: ${{ github.run_number }}
-      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN || github.event.inputs.firebase_token }}
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+        bundler-cache: true
+
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.19.0'
         channel: 'stable'
+
+    - name: Install Fastlane dependencies
+      run: |
+        cd android
+        gem install bundler
+        bundle install
 
     - name: Run Fastlane
       run: |
