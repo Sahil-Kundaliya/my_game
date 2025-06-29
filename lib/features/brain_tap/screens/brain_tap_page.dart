@@ -52,7 +52,11 @@ class BrainTapScreen extends StatelessWidget {
                       return BrainTapGameBreakWidget(
                         nextLevel: brainTabCubit
                             .allGameLevel[brainTabCubit.selectedGameIndex + 1],
-                        breakTime: brainTabCubit.breakTimerCount.toString(),
+                        nextLevelCounter: brainTabCubit
+                            .allGameIndex[brainTabCubit.selectedGameIndex + 1],
+                        onTap: () {
+                          brainTabCubit.nextLevel();
+                        },
                       );
                     }
                     if (state is BrainTapGameOverState) {

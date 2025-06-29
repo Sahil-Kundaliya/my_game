@@ -21,7 +21,7 @@ class BrainTabCubit extends Cubit<BrainTabState> {
   List<int> selectedNumber = [];
   int selectedGameIndex = -1;
 
-  List<int> allGameIndex = [4, 6, 12, 16, 25, 30, 40];
+  List<int> allGameIndex = [4, 8, 12, 16, 25, 30, 42];
   List<String> allGameLevel = [
     "Newbie", // 4
     "Beginner", // 6
@@ -33,9 +33,7 @@ class BrainTabCubit extends Cubit<BrainTabState> {
   ];
   int gridviewCrossAxisCount = 5;
   Timer? _ticker;
-  Timer? _breakTicker;
   int timerCount = 0;
-  int breakTimerCount = 0;
   bool playerWin = false;
 
   loadingGame() {
@@ -71,11 +69,13 @@ class BrainTabCubit extends Cubit<BrainTabState> {
     selectedNumber.clear();
 
     var gameIndex = allGameIndex[selectedGameIndex];
+
     if (gameIndex > 25) {
       gridviewCrossAxisCount = 6;
-    }
-    if (gameIndex == 25) {
+    } else if (gameIndex == 25) {
       gridviewCrossAxisCount = 5;
+    } else if (gameIndex == 4) {
+      gridviewCrossAxisCount = 2;
     } else {
       gridviewCrossAxisCount = 4;
     }
@@ -104,21 +104,7 @@ class BrainTabCubit extends Cubit<BrainTabState> {
   }
 
   void _onBreakTimer() {
-    _breakTicker?.cancel(); // cancel any existing timer
-    breakTimerCount = 4;
-
     emit(BrainTapBreakState());
-
-    _breakTicker = Timer.periodic(const Duration(seconds: 1), (breakTimer) {
-      breakTimerCount--;
-
-      if (breakTimerCount <= 0) {
-        nextLevel();
-        breakTimer.cancel();
-      } else {
-        emit(BrainTapBreakState());
-      }
-    });
   }
 
   void tapNumber(int tap) {
@@ -142,7 +128,7 @@ class BrainTabCubit extends Cubit<BrainTabState> {
 
       //win
     }
-    emit(BrainTapGameState());
+    // emit(BrainTapGameState());
   }
 
   bool isIndexClicked(int gameIndex) {

@@ -32,8 +32,6 @@ class ThumbCubit extends Cubit<ThumbState> {
   updateScore({required bool player1, required BuildContext context}) {
     double deviceHeight = Dimenstions.instance.screenHeight;
     if (winner.isEmpty) {
-      log('SSS player_2Score $player_2Score');
-      log('SSS player_1Score $player_1Score');
       if (player1) {
         player_1Score += 20;
         player_2Score -= 20;
@@ -60,8 +58,7 @@ class ThumbCubit extends Cubit<ThumbState> {
         winner = 'Blue';
         restartGame(context: context);
       }
-      log('SSS player_2Score $player_2Score');
-      log('SSS player_1Score $player_1Score');
+
       updateState();
     }
   }

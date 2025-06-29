@@ -76,9 +76,6 @@ class NumberGameCubit extends Cubit<NumberGameState> {
   loadInitialData() {
     answerPicked = false;
     randomNumber.shuffle();
-    log('SSS answer $answerNumber');
-    // log('SSS answer $answerNumber');
-    log('SSS pick $pickNumber');
     updateState();
   }
 
@@ -180,7 +177,6 @@ class NumberGameCubit extends Cubit<NumberGameState> {
     }
     answerNumber.shuffle();
     answerPicked = true;
-    log('SSS answer list is =- $answerNumber');
     updateState();
   }
 }
