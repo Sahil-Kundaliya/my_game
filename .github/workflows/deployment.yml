@@ -47,5 +47,4 @@ jobs:
     - name: Run Fastlane
       run: |
         cd android
-        bundle install
         bundle exec fastlane firebase
