@@ -1,0 +1,117 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+
+  before_all do
+    $build_mode = ENV['BUILD_MODE'] && !ENV['BUILD_MODE'].empty? ? ENV['BUILD_MODE'] : "release"
+
+    $version_name = ENV['APP_VERSION'] && !ENV['APP_VERSION'].empty? ? ENV['APP_VERSION'] : get_version_name
+    $version_code = ENV['BUILD_NUMBER'] && !ENV['BUILD_NUMBER'].empty? ? ENV['BUILD_NUMBER'] : get_version_code
+    UI.message("Before all: version set to #{$version_name}+#{$version_code}")
+  end  
+
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+   desc "Build and distribute to Firebase App Distribution"
+  lane :firebase do
+     # 1. Flutter build steps (clean, get, build)
+    flutter_build_apk_release
+
+    # 2. Upload to Firebase
+    distribute_to_firebase
+  end
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    gradle(task: "clean assembleRelease")
+    crashlytics
+  
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+end
+
+
+# --- helper: run Flutter APK release build steps ---
+def flutter_build_apk_release
+  sh "flutter clean"
+  sh "flutter pub get"
+  sh("flutter build apk --#{$build_mode} --build-name=#{$version_name} --build-number=#{$version_code}")
+end
+# --- end flutter helper ---
+
+
+
+# --- helper method for Firebase App Distribution with internal defaults ---
+def distribute_to_firebase(
+  groups: "developers",
+  release_notes: "Automated build via Fastlane 🚀",
+)
+  # your Firebase App ID (copy this from Firebase Console)
+  app_id = "1:470879901330:android:191740d9be57c40051f84b"
+
+  # pull your token from ENV
+  firebase_token = ENV["FIREBASE_TOKEN"]
+
+
+  firebase_app_distribution(
+    app: app_id,
+    firebase_cli_token: firebase_token,
+    groups: groups,
+    release_notes: release_notes,
+    android_artifact_path: "../build/app/outputs/apk/release/app-#{$build_mode}.apk",  # Correct parameter
+    android_artifact_type: "APK",  # Correct parameter
+  )
+end
+# --- end helper method ---
+
+# Retrieves the current version name from pubspec.yaml using the flutter_version action.
+# The flutter_version action returns a hash with keys like 'version_name' and 'version_code'.
+def get_version_name
+  version_info = flutter_version()  # e.g., {"version_name" => "1.0.0", "version_code" => "1"}
+  current_version_name = version_info['version_name']
+  return current_version_name
+end
+
+
+# Retrieves the latest published build version from Firebase App Distribution,
+# increments it by one, and returns the new build number.
+def get_version_code
+  latest_release = firebase_app_distribution_get_latest_release(
+    app: "1:666604972502:android:6d23f150cd4d8dc627dc77",  # Replace with your actual Firebase App ID.
+    firebase_cli_token: ENV['FIREBASE_CLI_TOKEN']
+  )
+  
+  # Extract the current build version from the release info.
+  last_published_version_code = latest_release[:'buildVersion']
+  
+  # Increment the build version (e.g., from "1" to "2").
+  new_build_code = last_published_version_code.to_i + 1
+  
+  return new_build_code
+end
