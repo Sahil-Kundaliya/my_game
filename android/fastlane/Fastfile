@@ -18,10 +18,14 @@ default_platform(:android)
 platform :android do
 
   before_all do
+    $firebase_token = ENV['FIREBASE_CLI_TOKEN']
+    $firebase_app_id = ENV['FIREBASE_APP_ID'] 
+
     $build_mode = ENV['BUILD_MODE'] && !ENV['BUILD_MODE'].empty? ? ENV['BUILD_MODE'] : "release"
 
     $version_name = ENV['APP_VERSION'] && !ENV['APP_VERSION'].empty? ? ENV['APP_VERSION'] : get_version_name
     $version_code = ENV['BUILD_NUMBER'] && !ENV['BUILD_NUMBER'].empty? ? ENV['BUILD_NUMBER'] : get_version_code
+
     UI.message("Before all: version set to #{$version_name}+#{$version_code}")
   end  
 
@@ -70,18 +74,16 @@ end
 # --- helper method for Firebase App Distribution with internal defaults ---
 def distribute_to_firebase(
   groups: "developers",
-  release_notes: "Automated build via Fastlane 🚀",
+  release_notes: "Automated build via Fastlane 🚀"
 )
   # your Firebase App ID (copy this from Firebase Console)
-  app_id = "1:470879901330:android:191740d9be57c40051f84b"
 
   # pull your token from ENV
-  firebase_token = ENV["FIREBASE_TOKEN"]
 
 
   firebase_app_distribution(
-    app: app_id,
-    firebase_cli_token: firebase_token,
+    app: $firebase_app_id,
+    firebase_cli_token: $firebase_token,
     groups: groups,
     release_notes: release_notes,
     android_artifact_path: "../build/app/outputs/apk/release/app-#{$build_mode}.apk",  # Correct parameter
@@ -103,8 +105,8 @@ end
 # increments it by one, and returns the new build number.
 def get_version_code
   latest_release = firebase_app_distribution_get_latest_release(
-    app: "1:666604972502:android:6d23f150cd4d8dc627dc77",  # Replace with your actual Firebase App ID.
-    firebase_cli_token: ENV['FIREBASE_CLI_TOKEN']
+    app: $firebase_app_id,  # Replace with your actual Firebase App ID.
+    firebase_cli_token: $firebase_token
   )
   
   # Extract the current build version from the release info.
