@@ -28,6 +28,7 @@ jobs:
       APP_VERSION: ${{ github.event.inputs.app_version }}
       BUILD_NUMBER: ${{ github.run_number }}
       FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}  # Add this line
 
     steps:
     - name: Checkout code
