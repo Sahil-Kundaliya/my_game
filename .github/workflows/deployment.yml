@@ -27,7 +27,7 @@ jobs:
       BUILD_MODE: ${{ github.event.inputs.build_mode || 'release' }}
       APP_VERSION: ${{ github.event.inputs.app_version }}
       BUILD_NUMBER: ${{ github.run_number }}
-      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
       FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}  # Add this line
 
     steps:
