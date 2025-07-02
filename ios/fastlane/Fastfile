@@ -1,0 +1,85 @@
+# fastlane/Fastfile
+
+default_platform(:ios)
+
+platform :ios do
+  before_all do
+    # pull in the same ENV vars you use on Android
+    $firebase_token  = ENV['FIREBASE_CLI_TOKEN']
+    $firebase_app_id = "app-1-470879901330-ios-1835c9114d61b49651f84b" 
+# ENV['FIREBASE_APP_ID']
+
+    $build_mode      = ENV['BUILD_MODE'] && !ENV['BUILD_MODE'].empty? ? ENV['BUILD_MODE'] : "release"
+
+    $version_name = ENV['APP_VERSION'] && !ENV['APP_VERSION'].empty? ? ENV['APP_VERSION'] : get_version_name
+    $version_code = ENV['BUILD_NUMBER'] && !ENV['BUILD_NUMBER'].empty? ? ENV['BUILD_NUMBER'] : get_version_code
+
+    UI.message("🔧 Before all: version set to #{$version_name} (build #{$version_code}), mode=#{$build_mode}")
+  end
+
+  desc "Run Flutter tests"
+  lane :test do
+    sh "flutter test"
+  end
+
+  desc "Build and distribute to Firebase App Distribution"
+  lane :firebase do
+    build_flutter_ipa
+    distribute_to_firebase
+  end
+
+  desc "Submit a new Beta Build to TestFlight"
+  lane :beta do
+    build_flutter_ipa
+    upload_to_testflight(
+      ipa: "build/ios/ipa/Runner.ipa",
+      skip_waiting_for_build_processing: true,
+      changelog: "Automated iOS beta via Fastlane 🚀"
+    )
+  end
+
+  desc "Deploy a new version to App Store (production)"
+  lane :deploy do
+    build_flutter_ipa
+    deliver(
+      ipa: "build/ios/ipa/Runner.ipa",
+      force: true,
+      skip_metadata: true,
+      skip_screenshots: true
+    )
+  end
+end
+
+# --- helper: build Flutter IPA release ---
+private_lane :build_flutter_ipa do
+  sh "flutter clean"
+  sh "flutter pub get"
+  sh "flutter build ipa --#{$build_mode} --build-name=#{$version_name} --build-number=#{$version_code}"
+end
+
+# --- helper: Firebase App Distribution (iOS) ---
+private_lane :distribute_to_firebase do |options|
+  firebase_app_distribution(
+    app: $firebase_app_id,
+    firebase_cli_token: $firebase_token,
+    ipa_path: "build/ios/ipa/Runner.ipa",
+    testers: options[:groups] || "developers",
+    release_notes: options[:release_notes] || "Automated iOS build via Fastlane 🚀"
+  )
+end
+
+# Retrieves version_name from pubspec.yaml
+def get_version_name
+  info = flutter_version()
+  return info['version_name']
+end
+
+# Retrieves latest buildVersion from Firebase, increments by one
+def get_version_code
+  latest = firebase_app_distribution_get_latest_release(
+    app: $firebase_app_id,
+    firebase_cli_token: $firebase_token
+  )
+  last_code = latest[:buildVersion].to_i
+  return last_code + 1
+end
